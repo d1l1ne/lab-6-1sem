@@ -139,9 +139,13 @@ void dynamic_array() {
 		array_output(dynarray, n);
 
 		int scount = try_catch_pos(scount_s);
+		
+		if (scount > 0) {
 
-		cout << "Array after shifting:" << endl;
-		array_shift(dynarray, scount, n);
+			cout << "Array after shifting:" << endl;
+			array_shift(dynarray, scount, n);
+
+		}
 
 	}
 
