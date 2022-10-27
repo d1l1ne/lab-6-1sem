@@ -6,6 +6,7 @@ using namespace std;
 
 int try_catch_pos(string value);
 int try_catch(string value);
+bool check_array(string array[], int& elems_number);
 
 void array_shift(int array[], int& count, int& array_length);
 void array_output(int array[], int& elems_number);
@@ -232,10 +233,31 @@ int try_catch(string value) {
 
 }
 
-void array_from_file() { 
+bool check_array(string array[], int& elems_number) {
+
+	bool state = true;
+	for (int i = 0; i < elems_number; i++) {
+
+		try {
+
+			stoi(array[i]);
+
+		}
+		catch (exception) {
+
+			state = false;
+			break;
+
+		}
+
+	}
+	return state;
+}
+
+void array_from_file() {
 
 	ifstream file("C:/vremennoe/arrays.txt");
-	
+
 	if (file.is_open()) {
 
 		int row_count = 0;
@@ -271,46 +293,62 @@ void array_from_file() {
 
 			int saved, round(0);
 
-			for (int t = 0; t < row_count; t++) {
+			if (check_array(temparray, row_count)) {
 
-				saved = try_catch_pos(temparray[t]);
-				if (round + saved < row_count) {
+				for (int t = 0; t < row_count; t++) {
 
-					int* small_array = new int[saved];
+					saved = try_catch_pos(temparray[t]);
 
-					for (int k = 0; k < saved; k++) {
+					if (saved <= 0) {
 
-						small_array[k] = try_catch(temparray[k + 1 + round]);
+						break;
 
 					}
-					string scount_s;
-					cout << "Enter shift count: " << endl;
-					cin >> scount_s;
+					if (round + saved < row_count) {
 
-					int scount = try_catch_pos(scount_s);
+						int* small_array = new int[saved];
 
-					round += saved + 1;
-					cout << "Array:" << endl;
-					array_output(small_array, saved);
-					cout << "Array after shifting:" << endl;
-					array_shift(small_array, scount, saved);
-					cout << endl;
+						for (int k = 0; k < saved; k++) {
 
-					t += saved;
+							small_array[k] = try_catch(temparray[k + 1 + round]);
 
-					if (t >= row_count - 1) {
+						}
+						string scount_s;
+						cout << "Enter shift count: " << endl;
+						cin >> scount_s;
 
+						int scount = try_catch_pos(scount_s);
+
+						round += saved + 1;
+						cout << "Array:" << endl;
+						array_output(small_array, saved);
+						cout << "Array after shifting:" << endl;
+						array_shift(small_array, scount, saved);
+						cout << endl;
+
+						t += saved;
+
+						if (t >= row_count - 1) {
+
+							break;
+
+						}
+
+					}
+					else {
+
+						cout << "Not enough values in next array" << endl;
 						break;
 
 					}
 
 				}
-				else {
 
-					cout << "Not enough values in next array" << endl;
-					break;
 
-				}
+			}
+			else {
+
+				cout << "File has invalid values" << endl;
 
 			}
 
@@ -320,7 +358,7 @@ void array_from_file() {
 			cout << "File is empty" << endl;
 
 		}
-		
+
 	}
 	else {
 
